@@ -9,6 +9,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IGenerateTokenService, GenerateTokenService>(); // Dodanie serwisu GenerateTokenService
 builder.Services.AddScoped<IRSAEncryptorService, RSAEncryptorService>(); // Dodanie serwisu RSAEncryptorService
+builder.Services.AddScoped<IGenerateUnixTimestampService, GenerateUnixTimestampService>(); // Dodanie serwisu GenerateUnixTimestampService
 
 
 var app = builder.Build();
