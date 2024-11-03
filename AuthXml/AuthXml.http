@@ -1,0 +1,6 @@
+@AuthXml_HostAddress = http://localhost:5201
+
+GET {{AuthXml_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Element główny -->
+	<xs:element name="Request">
+		<xs:complexType>
+			<xs:sequence>
+				<!-- Timestamp: Czas w formacie ISO8601 -->
+				<xs:element name="Timestamp" type="xs:dateTime"/>
+
+				<!-- NIP: Numer identyfikacji podatkowej -->
+				<xs:element name="NIP">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="\d{10}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<!-- EncryptedToken: Token z dużymi literami i cyframi o długości 64 znaków -->
+				<xs:element name="EncryptedToken">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="[A-Z0-9]{64}"/>
+							<xs:length value="64"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>
