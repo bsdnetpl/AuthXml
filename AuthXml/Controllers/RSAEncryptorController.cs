@@ -14,12 +14,12 @@ namespace AuthXml.Controllers
             {
             _rsaEncryptorService = rsaEncryptorService;
             }
-        [HttpGet]
+        [HttpGet ("Encrypt")]
         public IActionResult Encrypt(string text)
             {
             return Ok(_rsaEncryptorService.EncryptText(text, "Key/public_Key.pem"));
             }
-        [HttpPost]
+        [HttpPost ("Decrypt")]
         public IActionResult Decrypt(string encryptedText)
             {
             return Ok(_rsaEncryptorService.DecryptText(encryptedText, "Key/private_Key.pem"));

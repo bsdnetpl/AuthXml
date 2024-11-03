@@ -18,10 +18,16 @@ namespace AuthXml.Controllers
             {
             return Ok(_generateUnixTimestampService.GetUnixTimestamp());
             }
-        [HttpGet ("milliseconds")]
+        [HttpGet("milliseconds")]
         public IActionResult GenerateUnixTimestampMilliseconds()
             {
             return Ok(_generateUnixTimestampService.GenerateUnixTimestampMilliseconds());
+            }
+        [HttpGet ("ISO8601")]
+        public IActionResult GenerateUnixTimestamISO8601()
+            {
+            string timestamp = _generateUnixTimestampService.GenerateIso8601Timestamp();
+            return Ok(timestamp);
             }
         }
     }

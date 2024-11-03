@@ -15,7 +15,7 @@ namespace AuthXml.Controllers
             _generateTokenService = generateTokenService;
             }
 
-        [HttpPost]
+        [HttpPost ("GenerateToken")]
         public IActionResult GenerateToken()
             {
             return Ok(_generateTokenService.GenerateToken(64));
