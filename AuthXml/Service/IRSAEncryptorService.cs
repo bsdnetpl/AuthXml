@@ -2,7 +2,7 @@
     {
     public interface IRSAEncryptorService
         {
-        string DecryptText(string encryptedText, string privateKeyPath);
-        string EncryptText(string text, string publicKeyPath);
+        string DecryptText(string encryptedText, string privateKeyPath, string timestamp);
+        string EncryptText(string text, string publicKeyPath, string timestamp);
         }
     }

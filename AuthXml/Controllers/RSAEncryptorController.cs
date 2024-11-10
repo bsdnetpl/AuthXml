@@ -1,6 +1,6 @@
 ﻿using AuthXml.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AuthXml.Controllers
     {
@@ -14,15 +14,31 @@ namespace AuthXml.Controllers
             {
             _rsaEncryptorService = rsaEncryptorService;
             }
-        [HttpGet ("Encrypt")]
-        public IActionResult Encrypt(string text)
+
+        [HttpGet("Encrypt")]
+        public IActionResult Encrypt(string text, string timestamp)
             {
-            return Ok(_rsaEncryptorService.EncryptText(text, "Key/public_Key.pem"));
+            // Szyfrowanie tekstu z użyciem znacznika czasu
+            var encryptedText = _rsaEncryptorService.EncryptText(text, "Key/public_Key.pem", timestamp);
+
+            // Zwrócenie zaszyfrowanego tekstu oraz znacznika czasu
+            return Ok(new { encryptedText, timestamp });
             }
-        [HttpPost ("Decrypt")]
-        public IActionResult Decrypt(string encryptedText)
+
+        [HttpPost("Decrypt")]
+        public IActionResult Decrypt(string encryptedText, string timestamp)
             {
-            return Ok(_rsaEncryptorService.DecryptText(encryptedText, "Key/private_Key.pem"));
+            try
+                {
+                // Deszyfrowanie tekstu z przekazanym znacznikiem czasu
+                var decryptedText = _rsaEncryptorService.DecryptText(encryptedText, "Key/private_Key.pem", timestamp);
+                return Ok(decryptedText);
+                }
+            catch (Exception ex)
+                {
+                // Obsługa błędów
+                return BadRequest(new { message = "Błąd podczas deszyfrowania.", error = ex.Message });
+                }
             }
         }
     }

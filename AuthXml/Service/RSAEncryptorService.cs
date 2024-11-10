@@ -4,12 +4,13 @@ using Org.BouncyCastle.Security;
 using System.Security.Cryptography;
 using System.Text;
 using Org.BouncyCastle.OpenSsl;
+using System.IO;
 
 namespace AuthXml.Service
     {
     public class RSAEncryptorService : IRSAEncryptorService
         {
-        public string EncryptText(string text, string publicKeyPath)
+        public string EncryptText(string text, string publicKeyPath, string timestamp)
             {
             using (var rsa = RSA.Create())
                 {
@@ -26,8 +27,8 @@ namespace AuthXml.Service
                 var keyBytes = Convert.FromBase64String(publicKeyFormatted);
                 rsa.ImportSubjectPublicKeyInfo(keyBytes, out _);
 
-                // Szyfrowanie tekstu
-                var dataToEncrypt = Encoding.UTF8.GetBytes(text);
+                // Dołączamy znacznik czasu do danych do zaszyfrowania
+                var dataToEncrypt = Encoding.UTF8.GetBytes($"{timestamp}|{text}");
                 var encryptedData = rsa.Encrypt(dataToEncrypt, RSAEncryptionPadding.Pkcs1);
 
                 // Konwersja zaszyfrowanych danych do formatu Base64
@@ -35,9 +36,7 @@ namespace AuthXml.Service
                 }
             }
 
-
-
-        public string DecryptText(string encryptedText, string privateKeyPath)
+        public string DecryptText(string encryptedText, string privateKeyPath, string timestamp)
             {
             // Wczytaj klucz prywatny z pliku PEM
             var privateKeyPem = File.ReadAllText(privateKeyPath);
@@ -78,9 +77,27 @@ namespace AuthXml.Service
                 byte[] decryptedData = rsa.Decrypt(dataToDecrypt, RSAEncryptionPadding.Pkcs1);
 
                 // Konwersja bajtów na tekst UTF-8
-                return Encoding.UTF8.GetString(decryptedData);
+                var decryptedTextWithTimestamp = Encoding.UTF8.GetString(decryptedData);
+
+                // Rozdziel znacznik czasu i oryginalny tekst
+                var parts = decryptedTextWithTimestamp.Split('|');
+                if (parts.Length != 2)
+                    {
+                    throw new InvalidOperationException("Nieprawidłowy format zaszyfrowanego tekstu.");
+                    }
+
+                var decryptedTimestamp = parts[0];
+                var originalText = parts[1];
+
+                // Weryfikacja zgodności przekazanego timestampu
+                if (decryptedTimestamp != timestamp)
+                    {
+                    throw new InvalidOperationException("Znacznik czasu nie jest zgodny. Deszyfrowanie niemożliwe.");
+                    }
+
+                // Zwróć oryginalny tekst
+                return originalText;
                 }
             }
         }
-
     }
