@@ -2,6 +2,6 @@
     {
     public interface IGenerateTokenService
         {
-        string GenerateToken(int length);
+        string GenerateToken(int length = 32);
         }
     }

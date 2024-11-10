@@ -11,9 +11,19 @@ builder.Services.AddScoped<IGenerateTokenService, GenerateTokenService>(); // Do
 builder.Services.AddScoped<IRSAEncryptorService, RSAEncryptorService>(); // Dodanie serwisu RSAEncryptorService
 builder.Services.AddScoped<IGenerateUnixTimestampService, GenerateUnixTimestampService>(); // Dodanie serwisu GenerateUnixTimestampService
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Adres aplikacji Angular
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
-
+app.UseCors("AllowAngularApp");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
     {

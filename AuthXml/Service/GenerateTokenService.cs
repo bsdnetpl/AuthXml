@@ -3,13 +3,14 @@ using System.Text;
 
 namespace AuthXml.Service
     {
-    public class GenerateTokenService: IGenerateTokenService
+    public class GenerateTokenService : IGenerateTokenService
         {
         public string GenerateToken(int length = 32)
             {
             const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             var token = new StringBuilder(length);
-            using (var rng = new RNGCryptoServiceProvider())
+
+            using (var rng = RandomNumberGenerator.Create())
                 {
                 var byteBuffer = new byte[sizeof(uint)];
 
@@ -21,7 +22,8 @@ namespace AuthXml.Service
                     }
                 }
 
-            return token.ToString();
+            return token.ToString(); // Add this return statement
             }
         }
     }
+
