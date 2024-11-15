@@ -12,32 +12,21 @@ namespace AuthXml.Models
         public string Password { get; set; }
     }
     public class UserDtoValidator : AbstractValidator<UserAddDto>
-    {
-        private readonly ConnectToDB _context;
-
-        public UserDtoValidator(ConnectToDB context)
         {
-            _context = context;
-
+        public UserDtoValidator()
+            {
             RuleFor(user => user.Name)
                 .NotEmpty().WithMessage("Name is required.")
                 .MinimumLength(2).WithMessage("Name must be at least 2 characters long.");
 
             RuleFor(user => user.Email)
                 .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("A valid email address is required.")
-                .MustAsync(BeUniqueEmail).WithMessage("Email must be unique.");
+                .EmailAddress().WithMessage("A valid email address is required.");
 
             RuleFor(user => user.Password)
                 .NotEmpty().WithMessage("Password is required.")
                 .MinimumLength(6).WithMessage("Password must be at least 6 characters long.");
+            }
         }
 
-        // Metoda asynchroniczna sprawdzająca unikalność emaila
-        private async Task<bool> BeUniqueEmail(string email, CancellationToken cancellationToken)
-        {
-            return !await _context.Users.AnyAsync(u => u.Email == email, cancellationToken);
-        }
     }
-
-}

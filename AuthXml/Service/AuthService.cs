@@ -31,8 +31,12 @@ namespace AuthXml.Service
 
             if (isPasswordValid)
             {
+                
                 // Generowanie tokenu przy pomyślnym logowaniu
-                string token = _tokenService.GenerateToken();
+                string token = _tokenService.GenerateToken(64);
+                user.Token = token;
+                //_context.Users.Update(user);
+                await _context.SaveChangesAsync();
                 return token;
             }
             else
