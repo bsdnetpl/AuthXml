@@ -1,12 +1,12 @@
 ﻿using AuthXml.DB;
-using AuthXml.Models;
+using AuthXml.DTO;
 using AuthXml.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuthXml.Controllers
-{
+    {
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

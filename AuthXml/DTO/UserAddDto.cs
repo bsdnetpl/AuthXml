@@ -1,16 +1,15 @@
 ﻿using AuthXml.DB;
-using AuthXml.DTO;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuthXml.Models
-{
-    public class UserAddDto
+namespace AuthXml.DTO
     {
+    public class UserAddDto
+        {
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-    }
+        }
     public class UserDtoValidator : AbstractValidator<UserAddDto>
         {
         public UserDtoValidator()

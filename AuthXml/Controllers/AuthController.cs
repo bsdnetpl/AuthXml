@@ -1,5 +1,6 @@
 ﻿using AuthXml.DTO;
 using AuthXml.Service;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace AuthXml.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAngularApp")] // Zastosowanie polityki CORS dla całego kontrolera
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
@@ -31,5 +33,27 @@ namespace AuthXml.Controllers
                 return Ok(new { Token = result });
             }
         }
-    }
+
+        [HttpPost("logintojwt")]
+        public async Task<IActionResult> LoginToJwt([FromBody] UserDto userDto)
+            {
+            try
+                {
+                // Wywołanie logowania z JWT
+                var (token, userDetails) = await _authService.LoginWithJwtAsync(userDto);
+
+                // Zwracanie tokenu i szczegółów użytkownika
+                return Ok(new
+                    {
+                    Token = token,
+                    UserDetails = userDetails
+                    });
+                }
+            catch (UnauthorizedAccessException ex)
+                {
+                // Obsługa błędnych danych logowania
+                return Unauthorized(new { Message = ex.Message });
+                }
+            }
+        }
 }

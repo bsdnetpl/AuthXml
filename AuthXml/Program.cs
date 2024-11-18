@@ -1,8 +1,10 @@
 using AuthXml.DB;
-using AuthXml.Models;
+using AuthXml.DTO;
 using AuthXml.Service;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +22,8 @@ builder.Services.AddDbContext<ConnectToDB>(options =>
 builder.Services.AddScoped<IGenerateTokenService, GenerateTokenService>(); // Dodanie serwisu GenerateTokenService
 builder.Services.AddScoped<IRSAEncryptorService, RSAEncryptorService>(); // Dodanie serwisu RSAEncryptorService
 builder.Services.AddScoped<IGenerateUnixTimestampService, GenerateUnixTimestampService>(); // Dodanie serwisu GenerateUnixTimestampService
-builder.Services.AddScoped<UserService>(); 
-builder.Services.AddScoped<AuthService>(); 
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddCors(options =>
 {
@@ -33,6 +35,23 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader();
         });
 });
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+            {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is missing from configuration")))
+            };
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 app.UseCors("AllowAngularApp");
@@ -53,6 +72,8 @@ app.MapGet("/", context =>
 });
 // app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

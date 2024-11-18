@@ -1,8 +1,9 @@
 ﻿using AuthXml.DB;
+using AuthXml.DTO;
 using AuthXml.Models;
 
 namespace AuthXml.Service
-{
+    {
     public class UserService : IUserService
     {
         private readonly ConnectToDB _context;
@@ -19,7 +20,8 @@ namespace AuthXml.Service
                 Name = userDto.Name,
                 Email = userDto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
-                DateTimeCreate = DateTime.UtcNow
+                DateTimeCreate = DateTime.UtcNow,
+                Role="user"
             };
 
             // Dodanie użytkownika do kontekstu i zapisanie zmian
