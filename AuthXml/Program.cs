@@ -24,6 +24,7 @@ builder.Services.AddScoped<IRSAEncryptorService, RSAEncryptorService>(); // Doda
 builder.Services.AddScoped<IGenerateUnixTimestampService, GenerateUnixTimestampService>(); // Dodanie serwisu GenerateUnixTimestampService
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IXmlValidationService, XmlValidationService>();
 
 builder.Services.AddCors(options =>
 {
